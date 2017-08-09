@@ -133,7 +133,8 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
 
                 # TODO add entries for each file found
                 for content in ds_store_content:
-                    content_url = protocol + '://' + host + path.rsplit("/", 1) + "/%s" % content
+                    content_url = "%s://%s%s/%s" % (protocol, host, path.rsplit("/", 1), content)
+                    print content_url
 
         return (self.scan_issues)
 
