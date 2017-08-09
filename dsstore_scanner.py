@@ -173,5 +173,5 @@ class ScanIssue(IScanIssue):
         return "Certain"
 
     def extensionUnloaded(self):
-        print ".DS_Store Scanner Unloaded"
+        print(".DS_Store Scanner Unloaded")
         return
