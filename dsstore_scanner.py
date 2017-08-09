@@ -117,6 +117,8 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
                                           issueremediation))
         self.logsTA.append(log)
 
+        return (self.scan_issues)
+
     def consolidateDuplicateIssues(self, existingIssue, newIssue):
         if existingIssue.getUrl() == newIssue.getUrl() and \
                         existingIssue.getIssueDetail() == newIssue.getIssueDetail():
