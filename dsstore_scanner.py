@@ -95,26 +95,25 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
         request = self._requestResponse.getRequest()
         filename = request.tostring().split()[1]
 
-        # if filename is ".DS_Store":
-        host = self._requestResponse.getHttpService().getHost()
-        response = self._requestResponse.getResponse()
-        responseInfo = self._helpers.analyzeResponse(response)
-        bodyOffset = responseInfo.getBodyOffset()
+        if filename is ".DS_Store":
+            host = self._requestResponse.getHttpService().getHost()
+            response = self._requestResponse.getResponse()
+            responseInfo = self._helpers.analyzeResponse(response)
+            bodyOffset = responseInfo.getBodyOffset()
 
-        issuename = "Found .DS_Store file"
-        issuelevel = "Low"
-        issuedetail = """<p>Found .DS_Store file.</p>"""
-        log = "[+] .DS_Store: " + host + "\n"
-        issueremediation = """Some remediation"""
+            issuename = "Found .DS_Store file"
+            issuelevel = "Low"
+            issuedetail = """<p>Found .DS_Store file.</p>"""
+            issueremediation = """Some remediation"""
 
-        # Create a ScanIssue object and append it to our list of issues
-        self.scan_issues.append(ScanIssue(self._requestResponse.getHttpService(),
-                                          self._helpers.analyzeRequest(
-                                              self._requestResponse).getUrl(),
-                                          issuename,
-                                          issuelevel,
-                                          issuedetail,
-                                          issueremediation))
+            # Create a ScanIssue object and append it to our list of issues
+            self.scan_issues.append(ScanIssue(self._requestResponse.getHttpService(),
+                                              self._helpers.analyzeRequest(
+                                                  self._requestResponse).getUrl(),
+                                              issuename,
+                                              issuelevel,
+                                              issuedetail,
+                                              issueremediation))
 
         return (self.scan_issues)
 
