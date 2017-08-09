@@ -6,6 +6,7 @@ from burp import IExtensionStateListener
 from burp import IScanIssue
 
 import StringIO
+from urlparse import urlparse
 
 def traverse_ds_store_file(d):
     """
@@ -94,34 +95,49 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
 
         request = self._requestResponse.getRequest()
         path = request.tostring().split()[1]
-        filename = path.split("/")[-1]
+        folder = path.rsplit("/", 1)
 
-        print path, filename
+        # it's a folder
+        if path.split("?")[0][-1] == "/":
+            # TODO test to see if there's a .DS_Store file in that folder
+            pass
+        # it's a file
+        else:
+            filename = path.split("/")[-1].split("?")[0]
+            # it's a .DS_Store file
+            if filename == ".DS_Store":
+                host = self._requestResponse.getHttpService().getHost()
+                protocol = self._requestResponse.getHttpService().getProtocol()
+                response = self._requestResponse.getResponse()
+                responseInfo = self._helpers.analyzeResponse(response)
+                bodyOffset = responseInfo.getBodyOffset()
 
-        if filename == ".DS_Store":
-            host = self._requestResponse.getHttpService().getHost()
-            response = self._requestResponse.getResponse()
-            responseInfo = self._helpers.analyzeResponse(response)
-            bodyOffset = responseInfo.getBodyOffset()
+                ds_store_file = StringIO.StringIO()
+                ds_store_file.write(response.tostring()[bodyOffset:])
+                ds_store_content = get_ds_store_content(ds_store_file)
 
-            ds_store_file = StringIO.StringIO()
-            ds_store_file.write(response.tostring()[bodyOffset:])
-            ds_store_content = get_ds_store_content(ds_store_file)
-            print ds_store_content
+                issuename = "Found .DS_Store file"
+                issuelevel = "Low"
+                issuedetail = """<p>The .DS_Store file contained the following entries:%s</p>""" %\
+                              ", ".join(str(x) for x in ds_store_content)
+                issueremediation = """Some remediation"""
 
-            issuename = "Found .DS_Store file"
-            issuelevel = "Low"
-            issuedetail = """<p>Found .DS_Store file.</p>"""
-            issueremediation = """Some remediation"""
+                # Create a ScanIssue object and append it to our list of issues
+                self.scan_issues.append(ScanIssue(self._requestResponse.getHttpService(),
+                                                  self._helpers.analyzeRequest(
+                                                      self._requestResponse).getUrl(),
+                                                  issuename,
+                                                  issuelevel,
+                                                  issuedetail,
+                                                  issueremediation))
 
-            # Create a ScanIssue object and append it to our list of issues
-            self.scan_issues.append(ScanIssue(self._requestResponse.getHttpService(),
-                                              self._helpers.analyzeRequest(
-                                                  self._requestResponse).getUrl(),
-                                              issuename,
-                                              issuelevel,
-                                              issuedetail,
-                                              issueremediation))
+                # TODO add entries for each file found
+                for content in ds_store_content:
+                    content_url = protocol + '://' + host
+                    print content_url
+
+
+            self._callbacks.addToSiteMap(requestResponse)
 
         return (self.scan_issues)
 
