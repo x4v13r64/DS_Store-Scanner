@@ -137,7 +137,7 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
                     print content_url
 
 
-            self._callbacks.addToSiteMap(requestResponse)
+            # self._callbacks.addToSiteMap(requestResponse)
 
         return (self.scan_issues)
 
