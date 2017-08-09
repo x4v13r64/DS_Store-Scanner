@@ -171,3 +171,7 @@ class ScanIssue(IScanIssue):
 
     def getConfidence(self):
         return "Certain"
+
+    def extensionUnloaded(self):
+        print ".DS_Store Scanner Unloaded"
+        return
