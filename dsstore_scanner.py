@@ -7,7 +7,7 @@ from burp import IScanIssue
 
 import StringIO
 
-def traverse(d):
+def traverse_ds_store_file(d):
     """
     Traverse a DSStore object from the node and yeld each entry.
     :param d: DSStore object
@@ -37,10 +37,11 @@ def get_ds_store_content(ds_store_file):
     :param ds_store_file: .DS_Store file path
     :return: Set containing all files/directories found in the .DS_Store file
     """
-    ds_store_content = set()
-    for x in traverse(ds_store_file):
-        if x.filename != '.':
-            ds_store_content.add(x.filename)
+    with DSStore.open(ds_store_file) as d:
+        ds_store_content = set()
+        for x in traverse_ds_store_file(d):
+            if x.filename != '.':
+                ds_store_content.add(x.filename)
     return ds_store_content
 
 
@@ -102,7 +103,8 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
             responseInfo = self._helpers.analyzeResponse(response)
             bodyOffset = responseInfo.getBodyOffset()
 
-            ds_store_file = response.tostring()[bodyOffset:]
+            ds_store_file = StringIO.StringIO()
+            ds_store_file.write(response.tostring()[bodyOffset:])
             ds_store_content = get_ds_store_content(ds_store_file)
             print ds_store_content
 
