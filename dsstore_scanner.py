@@ -3,9 +3,9 @@ from ds_store import DSStore, DSStoreEntry
 from burp import IBurpExtender
 from burp import IScannerCheck
 from burp import IExtensionStateListener
-from burp import IExtensionHelpers
 from burp import IScanIssue
 
+import StringIO
 
 def traverse(d):
     """
@@ -96,14 +96,16 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
         path = request.tostring().split()[1]
         filename = path.split("/")[-1]
 
-        print("*%s*" % filename)
 
         if filename == ".DS_Store":
-            print(1)
             host = self._requestResponse.getHttpService().getHost()
             response = self._requestResponse.getResponse()
             responseInfo = self._helpers.analyzeResponse(response)
             bodyOffset = responseInfo.getBodyOffset()
+
+            ds_store_file = StringIO.StringIO()
+            ds_store_file.write(response.tostring()[bodyOffset:])
+            print ds_store_file
 
             issuename = "Found .DS_Store file"
             issuelevel = "Low"
