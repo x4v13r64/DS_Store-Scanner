@@ -118,8 +118,8 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
 
                 issuename = "Found .DS_Store file"
                 issuelevel = "Low"
-                issuedetail = """<p>The .DS_Store file contained the following entries:%s</p>""" %\
-                              ", ".join(str(x) for x in ds_store_content)
+                issuedetail = """<p>The .DS_Store file contained the following entries: <br><ul><li>%s</li></ul></p>""" %\
+                              "</li><li>".join(str(x) for x in ds_store_content)
                 issueremediation = """Some remediation"""
 
                 # Create a ScanIssue object and append it to our list of issues
