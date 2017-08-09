@@ -115,7 +115,6 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
                                           issuelevel,
                                           issuedetail,
                                           issueremediation))
-        self.logsTA.append(log)
 
         return (self.scan_issues)
 
