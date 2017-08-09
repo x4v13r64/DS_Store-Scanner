@@ -130,6 +130,10 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
         else:
             return 0
 
+    def extensionUnloaded(self):
+        print(".DS_Store Scanner Unloaded")
+        return
+
 
 # Implementation of the IScanIssue interface with simple constructor and getter methods
 class ScanIssue(IScanIssue):
@@ -173,7 +177,3 @@ class ScanIssue(IScanIssue):
 
     def getConfidence(self):
         return "Certain"
-
-    def extensionUnloaded(self):
-        print(".DS_Store Scanner Unloaded")
-        return
