@@ -31,18 +31,17 @@ def traverse(d):
                 yield e
 
 
-def list(ds_store_file):
+def get_ds_store_content(ds_store_file):
     """
     List all entries from a .DS_Store file
     :param ds_store_file: .DS_Store file path
     :return: Set containing all files/directories found in the .DS_Store file
     """
-    with DSStore.open(ds_store_file, 'r+') as d:
-        dirs_files = set()
-        for x in traverse(d):
-            if x.filename != '.':
-                dirs_files.add(x.filename)
-    return dirs_files
+    ds_store_content = set()
+    for x in traverse(ds_store_file):
+        if x.filename != '.':
+            ds_store_content.add(x.filename)
+    return ds_store_content
 
 
 class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
@@ -104,10 +103,8 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
             bodyOffset = responseInfo.getBodyOffset()
 
             ds_store_file = response.tostring()[bodyOffset:]
-            print ds_store_file
-
-            # ds_store_file = StringIO.StringIO()
-            # ds_store_file.write(response.tostring()[bodyOffset:])
+            ds_store_content = get_ds_store_content(ds_store_file)
+            print ds_store_content
 
             issuename = "Found .DS_Store file"
             issuelevel = "Low"
