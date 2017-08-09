@@ -96,6 +96,8 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
         path = request.tostring().split()[1]
         filename = path.split("/")[-1]
 
+        print(filename)
+
         if filename is ".DS_Store":
             host = self._requestResponse.getHttpService().getHost()
             response = self._requestResponse.getResponse()
