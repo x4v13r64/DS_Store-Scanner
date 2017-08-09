@@ -103,9 +103,11 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
             responseInfo = self._helpers.analyzeResponse(response)
             bodyOffset = responseInfo.getBodyOffset()
 
-            ds_store_file = StringIO.StringIO()
-            ds_store_file.write(response.tostring()[bodyOffset:])
+            ds_store_file = response.tostring()[bodyOffset:]
             print ds_store_file
+
+            # ds_store_file = StringIO.StringIO()
+            # ds_store_file.write(response.tostring()[bodyOffset:])
 
             issuename = "Found .DS_Store file"
             issuelevel = "Low"
