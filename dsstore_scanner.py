@@ -133,7 +133,7 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
 
                 # TODO add entries for each file found
                 for content in ds_store_content:
-                    content_url = "%s://%s%s/%s" % (protocol, host, path.rsplit("/", 1), content)
+                    content_url = "%s://%s%s/%s" % (protocol, host, path.rsplit("/", 1)[0], content)
                     print content_url
 
         return (self.scan_issues)
@@ -146,7 +146,7 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
             return 0
 
     def extensionUnloaded(self):
-        print(".DS_Store Scanner Unloaded")
+        print(".DS_Store Scanner unloaded")
         return
 
 
