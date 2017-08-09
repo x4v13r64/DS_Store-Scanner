@@ -118,7 +118,7 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
 
                 issuename = "Found .DS_Store file"
                 issuelevel = "Low"
-                issuedetail = """<p>The .DS_Store file contained the following entries: <br><ul><li>%s</li></ul></p>""" %\
+                issuedetail = """<p>The .DS_Store file was found to contain the following entries: <br><ul><li>%s</li></ul></p>""" %\
                               "</li><li>".join(str(x) for x in ds_store_content)
                 issueremediation = """Some remediation"""
 
@@ -133,11 +133,7 @@ class BurpExtender(IBurpExtender, IScannerCheck, IExtensionStateListener):
 
                 # TODO add entries for each file found
                 for content in ds_store_content:
-                    content_url = protocol + '://' + host
-                    print content_url
-
-
-            # self._callbacks.addToSiteMap(requestResponse)
+                    content_url = protocol + '://' + host + path.rsplit("/", 1) + "/%s" % content
 
         return (self.scan_issues)
 
